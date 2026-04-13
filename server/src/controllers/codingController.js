@@ -25,10 +25,17 @@ export const toggleSolved = async (req, res) => {
   const solvedIds = user.solvedCodingQuestions.map((id) => id.toString());
   const exists = solvedIds.includes(questionId);
 
-  user.solvedCodingQuestions = exists
-    ? user.solvedCodingQuestions.filter((id) => id.toString() !== questionId)
-    : [...user.solvedCodingQuestions, questionId];
+  if (exists) {
+    user.solvedCodingQuestions = user.solvedCodingQuestions.filter((id) => id.toString() !== questionId);
+  } else {
+    user.solvedCodingQuestions = [...user.solvedCodingQuestions, questionId];
+    // Successful DSA test-case pass: award 50 score points.
+    user.totalScore = (user.totalScore || 0) + 50;
+  }
 
   await user.save();
-  res.json({ message: exists ? "Marked as unsolved" : "Marked as solved" });
+  res.json({
+    message: exists ? "Marked as unsolved" : "Marked as solved",
+    totalScore: user.totalScore || 0
+  });
 };

@@ -7,6 +7,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     document.body.classList.toggle("light-mode", theme === "light");
+    document.body.classList.toggle("dark-mode", theme === "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
 

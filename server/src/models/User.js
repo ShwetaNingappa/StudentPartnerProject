@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     resetPasswordOTP: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
+    totalScore: { type: Number, default: 0 },
     totalQuizScore: { type: Number, default: 0 },
     dailyStreak: { type: Number, default: 0 },
     lastActiveDate: { type: Date },

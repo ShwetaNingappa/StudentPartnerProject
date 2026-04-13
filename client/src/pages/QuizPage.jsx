@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import confetti from "canvas-confetti";
 import api from "../api";
+import EmptyState from "../components/EmptyState";
 import Skeleton from "../components/Skeleton";
+import SuccessModal from "../components/SuccessModal";
 import { useToast } from "../context/ToastContext";
 
 const QuizPage = () => {
@@ -11,6 +14,7 @@ const QuizPage = () => {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -45,6 +49,16 @@ const QuizPage = () => {
       const { data } = await api.post("/quiz/submit", { answers });
       setResult(data);
       showToast("Quiz submitted successfully", "success");
+      if (data.streakMaintained) {
+        confetti({
+          particleCount: 280,
+          spread: 150,
+          startVelocity: 60,
+          ticks: 320,
+          origin: { x: 0.5, y: 0.5 }
+        });
+        setShowSuccessModal(true);
+      }
     } catch {
       showToast("Quiz submission failed", "error");
     } finally {
@@ -75,6 +89,7 @@ const QuizPage = () => {
 
   return (
     <div>
+      <SuccessModal open={showSuccessModal} onClose={() => setShowSuccessModal(false)} />
       <h2 className="text-2xl font-semibold mb-4">Aptitude Quiz</h2>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <p className="text-indigo-300">Time Left: {formatTime(Math.max(timeLeft, 0))}</p>
@@ -85,9 +100,15 @@ const QuizPage = () => {
       <div className="mb-6 h-2 w-full rounded-full bg-slate-700">
         <div className="h-2 rounded-full bg-indigo-600 transition-all" style={{ width: `${progress}%` }} />
       </div>
+      {!result && !questions.length && (
+        <EmptyState
+          title="Your journey starts here!"
+          description="Fresh questions will appear here once the quiz bank is available."
+        />
+      )}
       {!result && currentQuestion && (
         <>
-          <div className="rounded-xl bg-slate-800 p-4">
+          <div className="glass-card p-4">
             <p className="text-sm text-slate-300">
               Question {currentIndex + 1} of {total} | {currentQuestion.category}
             </p>
@@ -98,7 +119,7 @@ const QuizPage = () => {
                   key={opt}
                   className={`rounded-md border px-3 py-2 cursor-pointer ${
                     answers[currentQuestion.id] === opt
-                      ? "border-indigo-500 bg-indigo-500/20"
+                      ? "border-cyan-400 bg-cyan-500/20"
                       : "border-slate-600"
                   }`}
                 >
@@ -123,14 +144,14 @@ const QuizPage = () => {
             <button
               onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
               disabled={currentIndex === 0}
-              className="rounded-lg border border-slate-600 px-4 py-2 disabled:opacity-40"
+              className="interactive-item rounded-lg border border-cyan-400/35 px-4 py-2 disabled:opacity-40"
             >
               Previous
             </button>
             <button
               onClick={() => setCurrentIndex((prev) => Math.min(total - 1, prev + 1))}
               disabled={currentIndex === total - 1}
-              className="rounded-lg bg-indigo-600 px-4 py-2 disabled:opacity-40"
+              className="pro-btn rounded-lg px-4 py-2 disabled:opacity-40"
             >
               Next
             </button>
@@ -142,9 +163,9 @@ const QuizPage = () => {
                 onClick={() => setCurrentIndex(idx)}
                 className={`h-9 w-9 rounded-md text-sm ${
                   currentIndex === idx
-                    ? "bg-indigo-600"
+                    ? "bg-cyan-500 text-[#09141b]"
                     : answers[q.id]
-                      ? "bg-green-600/80"
+                      ? "bg-amber-400 text-[#161004]"
                       : "bg-slate-700"
                 }`}
               >
@@ -159,14 +180,15 @@ const QuizPage = () => {
         <button
           onClick={submitQuiz}
           disabled={submitting}
-          className="mt-6 rounded-lg bg-indigo-600 px-5 py-3 font-medium disabled:opacity-50"
+          className="pro-btn mt-6 rounded-lg px-5 py-3 font-medium disabled:opacity-50"
         >
           {submitting ? "Submitting..." : "Submit Quiz"}
         </button>
       ) : (
-        <div className="mt-6 rounded-xl bg-slate-800 p-4">
+        <div className="glass-card mt-6 p-4">
           <p className="text-lg">Score: {result.score}</p>
           <p className="text-slate-300">Total Questions: {result.totalQuestions}</p>
+          <p className="text-amber-300">Streak: {result.dailyStreak} day(s)</p>
         </div>
       )}
     </div>

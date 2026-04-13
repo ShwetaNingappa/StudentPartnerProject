@@ -6,13 +6,19 @@
 
 body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  background-color: #0f172a;
-  color: #e2e8f0;
+  background: radial-gradient(circle at top left, #161616 0%, #0d0d0d 46%, #060606 100%);
+  color: #e0e0e0;
+  min-height: 100vh;
 }
 
 body.light-mode {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background: radial-gradient(circle at top left, #ffffff 0%, #fdfbf7 55%, #f3eee6 100%);
+  color: #2d3436;
+}
+
+body.dark-mode {
+  background: radial-gradient(circle at top left, #161616 0%, #0d0d0d 46%, #060606 100%);
+  color: #e0e0e0;
 }
 
 body.light-mode .bg-slate-900 {
@@ -40,6 +46,92 @@ body.light-mode .border-slate-600 {
 
 .page-enter {
   animation: fadeSlideIn 220ms ease;
+}
+
+.glass-card {
+  background: linear-gradient(145deg, rgba(18, 18, 18, 0.72), rgba(15, 23, 42, 0.55));
+  border: 1px solid rgba(0, 242, 255, 0.35);
+  box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+}
+
+.pro-btn {
+  background: linear-gradient(120deg, #00f2ff, #22c1ff);
+  color: #06131a;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.pro-btn:hover {
+  box-shadow: 0 0 18px rgba(0, 242, 255, 0.75);
+  transform: translateY(-1px);
+}
+
+.gold-btn {
+  background: linear-gradient(120deg, #00f2ff, #08a9ff);
+  color: #06131a;
+  transition: all 0.3s ease;
+}
+
+.gold-btn:hover {
+  box-shadow: 0 0 18px rgba(0, 242, 255, 0.75);
+}
+
+.interactive-item {
+  transition: all 0.3s ease;
+}
+
+.interactive-item:hover {
+  box-shadow: 0 0 12px rgba(0, 242, 255, 0.35);
+}
+
+body.light-mode .glass-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(253, 251, 247, 0.62));
+  border: 1px solid rgba(128, 0, 32, 0.2);
+  box-shadow: 0 8px 24px rgba(45, 52, 54, 0.14);
+}
+
+body.light-mode .pro-btn {
+  background: linear-gradient(120deg, #800020, #a30028);
+  color: #fdfbf7;
+}
+
+body.light-mode .pro-btn:hover,
+body.light-mode .interactive-item:hover {
+  box-shadow: 0 0 14px rgba(128, 0, 32, 0.35);
+}
+
+body.light-mode .gold-btn {
+  background: linear-gradient(120deg, #800020, #b21f46);
+  color: #fdfbf7;
+}
+
+body.light-mode .text-cyan-300,
+body.light-mode .text-cyan-200,
+body.light-mode .text-cyan-400 {
+  color: #800020 !important;
+}
+
+body.light-mode .text-amber-300,
+body.light-mode .text-amber-200,
+body.light-mode .text-amber-400 {
+  color: #800020 !important;
+}
+
+body.dark-mode .text-amber-300,
+body.dark-mode .text-amber-200,
+body.dark-mode .text-amber-400 {
+  color: #00f2ff !important;
+}
+
+body.light-mode .border-cyan-400\/20,
+body.light-mode .border-cyan-400\/25,
+body.light-mode .border-cyan-400\/30,
+body.light-mode .border-cyan-400\/35,
+body.light-mode .border-cyan-400\/40 {
+  border-color: rgba(128, 0, 32, 0.35) !important;
 }
 
 @keyframes fadeSlideIn {

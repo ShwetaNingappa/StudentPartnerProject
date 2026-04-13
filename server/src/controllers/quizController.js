@@ -77,17 +77,31 @@ export const submitQuiz = async (req, res) => {
 
   const today = new Date();
   const previous = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
+  let streakMaintained = false;
   if (!previous) {
     user.dailyStreak = 1;
+    streakMaintained = true;
   } else {
     const daysDiff = Math.floor((today - previous) / (1000 * 60 * 60 * 24));
-    if (daysDiff === 1) user.dailyStreak += 1;
-    if (daysDiff > 1) user.dailyStreak = 1;
+    if (daysDiff === 1) {
+      user.dailyStreak += 1;
+      streakMaintained = true;
+    } else if (daysDiff === 0) {
+      streakMaintained = true;
+    } else if (daysDiff > 1) {
+      user.dailyStreak = 1;
+    }
   }
   user.lastActiveDate = today;
   await user.save();
 
-  res.json({ score, totalQuestions: selectedQuestions.length, categoryScores });
+  res.json({
+    score,
+    totalQuestions: selectedQuestions.length,
+    categoryScores,
+    dailyStreak: user.dailyStreak,
+    streakMaintained
+  });
 };
 
 export const getDashboardStats = async (req, res) => {

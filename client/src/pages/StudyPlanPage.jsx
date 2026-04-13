@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api";
+import EmptyState from "../components/EmptyState";
 import Skeleton from "../components/Skeleton";
 
 const quotes = [
@@ -26,9 +27,9 @@ const quotes = [
 ];
 
 const priorityBadge = {
-  High: "bg-amber-300/20 text-amber-800 border-amber-500/60",
-  Medium: "bg-indigo-300/20 text-indigo-900 border-indigo-500/60",
-  Low: "bg-emerald-300/20 text-emerald-900 border-emerald-500/60"
+  High: "bg-amber-300/20 text-amber-200 border-amber-500/60",
+  Medium: "bg-cyan-300/20 text-cyan-200 border-cyan-500/60",
+  Low: "bg-emerald-300/20 text-emerald-200 border-emerald-500/60"
 };
 
 const StudyPlanPage = () => {
@@ -78,29 +79,22 @@ const StudyPlanPage = () => {
   }
 
   return (
-    <div
-      className="rounded-2xl p-6 md:p-8"
-      style={{
-        backgroundColor: "#F8F9FA",
-        color: "#1A2238",
-        fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
-      }}
-    >
+    <div className="glass-card rounded-2xl p-6 md:p-8">
       <h2
         className="text-3xl font-semibold mb-3"
         style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
       >
         My Study Plan
       </h2>
-      <p className="mb-6 text-slate-700">
+      <p className="mb-6 text-slate-300">
         Focus areas: {data.weakestCategories.join(", ") || "Take a quiz to generate recommendations"}
       </p>
-      <div className="mb-6 rounded-xl p-4 border" style={{ backgroundColor: "#1A2238", color: "#F8F9FA" }}>
+      <div className="mb-6 glass-card rounded-xl p-4">
         <p className="text-sm uppercase tracking-widest text-amber-300">Quote of the Day</p>
         <p className="mt-2 text-lg">{quoteOfTheDay}</p>
       </div>
 
-      <div className="mb-8 rounded-xl p-4 border" style={{ backgroundColor: "#1A2238", color: "#F8F9FA" }}>
+      <div className="mb-8 glass-card rounded-xl p-4">
         <h3 className="text-xl mb-3" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
           Add a new placement goal
         </h3>
@@ -109,13 +103,13 @@ const StudyPlanPage = () => {
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             placeholder="e.g., Solve 15 aptitude questions before lunch"
-            className="flex-1 rounded-lg px-3 py-2 text-slate-900"
+            className="interactive-item flex-1 rounded-lg px-3 py-2 bg-slate-900/70 border border-cyan-400/30 text-slate-100"
             style={{ transition: "all 0.3s ease" }}
           />
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="rounded-lg px-3 py-2 text-slate-900"
+            className="interactive-item rounded-lg px-3 py-2 bg-slate-900/70 border border-cyan-400/30 text-slate-100"
             style={{ transition: "all 0.3s ease" }}
           >
             <option value="Low">Low</option>
@@ -124,56 +118,65 @@ const StudyPlanPage = () => {
           </select>
           <button
             onClick={addTask}
-            className="rounded-lg px-4 py-2 font-medium bg-amber-300 text-slate-900 hover:bg-amber-200"
+            className="gold-btn rounded-lg px-4 py-2 font-medium"
             style={{ transition: "all 0.3s ease" }}
           >
             Add Goal
           </button>
         </div>
-        <ul className="mt-4 space-y-2">
-          {data.tasks.map((task) => (
-            <li
-              key={task._id}
-              className="flex items-center justify-between rounded-lg p-3 bg-slate-100 border border-slate-300"
-              style={{ transition: "all 0.3s ease" }}
-            >
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={task.completed} onChange={() => toggleTask(task._id)} />
-                <span className={task.completed ? "line-through text-slate-500" : "text-slate-900"}>
-                  {task.text}
-                </span>
-                <span className={`text-xs rounded-full border px-2 py-0.5 ${priorityBadge[task.priority]}`}>
-                  {task.priority}
-                </span>
-              </label>
-              <button
-                onClick={() => removeTask(task._id)}
-                className="text-sm text-rose-700 hover:text-rose-600"
+        {!data.tasks.length ? (
+          <div className="mt-4">
+            <EmptyState title="Your journey starts here!" description="Add your first placement goal now." />
+          </div>
+        ) : (
+          <ul className="mt-4 space-y-2">
+            {data.tasks.map((task) => (
+              <li
+                key={task._id}
+                className="interactive-item flex items-center justify-between rounded-lg p-3 bg-slate-900/65 border border-cyan-400/25"
                 style={{ transition: "all 0.3s ease" }}
               >
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" checked={task.completed} onChange={() => toggleTask(task._id)} />
+                  <span className={task.completed ? "line-through text-slate-500" : "text-slate-100"}>
+                    {task.text}
+                  </span>
+                  <span className={`text-xs rounded-full border px-2 py-0.5 ${priorityBadge[task.priority]}`}>
+                    {task.priority}
+                  </span>
+                </label>
+                <button
+                  onClick={() => removeTask(task._id)}
+                  className="interactive-item text-sm text-rose-300 hover:text-rose-200"
+                  style={{ transition: "all 0.3s ease" }}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {data.plan.map((item) => (
-          <div
-            key={item.category}
-            className="rounded-xl p-4 border border-slate-200"
-            style={{ backgroundColor: "#1A2238", color: "#F8F9FA" }}
-          >
-            <h3 className="font-semibold text-amber-300">{item.category}</h3>
-            <ul className="mt-2 space-y-1 text-slate-100">
-              {item.recommendedTopics.map((topic) => (
-                <li key={topic}>- {topic}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      {!data.plan.length ? (
+        <EmptyState
+          title="Your journey starts here!"
+          description="Take an aptitude quiz to unlock personalized weak-area recommendations."
+        />
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {data.plan.map((item) => (
+            <div key={item.category} className="glass-card interactive-item rounded-xl p-4">
+              <h3 className="font-semibold text-amber-300">{item.category}</h3>
+              <ul className="mt-2 space-y-1 text-slate-100">
+                {item.recommendedTopics.map((topic) => (
+                  <li key={topic}>- {topic}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
