@@ -20,7 +20,8 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL?.split(",") || ["http://localhost:5173"],
+    // Allow common dev ports (Vite may choose 5173 or 5174)
+    origin: process.env.CLIENT_URL?.split(",") || ["http://localhost:5173", "http://localhost:5174"],
     credentials: true
   })
 );

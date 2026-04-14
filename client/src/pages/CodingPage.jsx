@@ -29,7 +29,7 @@ const CodingPage = () => {
     try {
       const current = questions.find((q) => q._id === id);
       const { data } = await api.patch(`/coding/${id}/toggle`);
-      showToast(data.message, "success");
+      if (data?.message) showToast(data.message, "success");
       if (!current?.solved) {
         confetti({
           particleCount: 260,

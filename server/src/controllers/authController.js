@@ -5,37 +5,57 @@ import { generateToken } from "../utils/generateToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 export const signup = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "Please provide all fields" });
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Please provide all fields" });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      // initialize common objects to avoid missing-object crashes elsewhere
+      categoryPerformance: {},
+      solvedCodingQuestions: [],
+      customTasks: [],
+      totalScore: 0,
+      dailyStreak: 0
+    });
+
+    return res.status(201).json({
+      token: generateToken(user._id),
+      user: { id: user._id, name: user.name, email: user.email }
+    });
+  } catch (error) {
+    console.error("signup error:", error);
+    return res.status(500).json({ message: error.message || "Signup failed" });
   }
-
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return res.status(400).json({ message: "Email already registered" });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hashedPassword });
-
-  return res.status(201).json({
-    token: generateToken(user._id),
-    user: { id: user._id, name: user.name, email: user.email }
-  });
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: "Invalid email or password" });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    return res.json({
+      token: generateToken(user._id),
+      user: { id: user._id, name: user.name, email: user.email }
+    });
+  } catch (error) {
+    console.error("login error:", error);
+    return res.status(500).json({ message: error.message || "Login failed" });
   }
-
-  return res.json({
-    token: generateToken(user._id),
-    user: { id: user._id, name: user.name, email: user.email }
-  });
 };
 
 export const me = async (req, res) => {

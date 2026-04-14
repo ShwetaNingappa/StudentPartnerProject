@@ -9,8 +9,9 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpires: { type: Date, default: null },
     totalScore: { type: Number, default: 0 },
     totalQuizScore: { type: Number, default: 0 },
+    // Use daily streak and last active date
     dailyStreak: { type: Number, default: 0 },
-    lastActiveDate: { type: Date },
+    lastActiveDate: { type: Date, default: Date.now },
     solvedCodingQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: "CodingQuestion" }],
     customTasks: [
       {

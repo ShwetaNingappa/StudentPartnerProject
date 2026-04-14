@@ -162,11 +162,11 @@ const QuizPage = () => {
                 key={q.id}
                 onClick={() => setCurrentIndex(idx)}
                 className={`h-9 w-9 rounded-md text-sm ${
-                  currentIndex === idx
-                    ? "bg-cyan-500 text-[#09141b]"
-                    : answers[q.id]
-                      ? "bg-amber-400 text-[#161004]"
-                      : "bg-slate-700"
+                  answers[q.id]
+                    ? "bg-emerald-500 text-[#08140b]" // answered -> green
+                    : currentIndex === idx
+                      ? "bg-amber-400 text-[#161004]" // current and unanswered -> orange
+                      : "bg-transparent border border-slate-600 text-slate-300" // not attempted -> white/bordered
                 }`}
               >
                 {idx + 1}
