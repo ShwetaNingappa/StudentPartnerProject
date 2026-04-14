@@ -5,7 +5,11 @@ import { codingQuestionsSeed } from "../data/codingQuestions.js";
 export const ensureCodingSeed = async () => {
   try {
     const existing = await CodingQuestion.countDocuments();
-    if (!existing) await CodingQuestion.insertMany(codingQuestionsSeed);
+    // If DB has fewer questions than our seed, refresh to include new entries
+    if (existing < codingQuestionsSeed.length) {
+      if (existing) await CodingQuestion.deleteMany({});
+      await CodingQuestion.insertMany(codingQuestionsSeed);
+    }
   } catch (error) {
     console.error("ensureCodingSeed error:", error);
   }

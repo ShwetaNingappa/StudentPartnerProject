@@ -10,6 +10,20 @@ const DashboardPage = () => {
   const [stats, setStats] = useState({ dailyStreak: 0, totalQuizScore: 0, progressChart: [] });
   const [loading, setLoading] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [quote, setQuote] = useState(null);
+
+  const quotes = [
+    "Small, consistent practice compounds into major skill gains.",
+    "Ship imperfect work and iterate — progress beats perfection.",
+    "Solve one new problem every day; your confidence will follow.",
+    "Learn to debug — it's the most valuable coding superpower.",
+    "Consistency builds streaks; streaks build habits.",
+    "Read code, write code, and then read more code.",
+    "Break problems into smaller pieces and solve each piece.",
+    "Ask the dumb question — clarity comes from curiosity.",
+    "Practice under time pressure to master real interview conditions.",
+    "Your future self will thank you for today's focused work."
+  ];
 
   useEffect(() => {
     // Note: Ensure your backend route returns 'streak' as 'dailyStreak' to match this state
@@ -17,6 +31,13 @@ const DashboardPage = () => {
       .then((res) => setStats(res.data))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      const pick = quotes[Math.floor(Math.random() * quotes.length)];
+      setQuote(pick);
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (!loading && stats.dailyStreak >= 5) {
@@ -48,6 +69,12 @@ const DashboardPage = () => {
     <div className="space-y-6">
       <SuccessModal open={showSuccessModal} onClose={() => setShowSuccessModal(false)} />
       
+      {quote && (
+        <div className="glass-card p-4 mb-4 border-l-4 border-indigo-400">
+          <p className="text-slate-300 text-sm">{quote}</p>
+        </div>
+      )}
+
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold text-white">Student Dashboard</h2>
         {stats.dailyStreak > 0 && (
@@ -59,14 +86,19 @@ const DashboardPage = () => {
 
       <div className="grid md:grid-cols-2 gap-4">
       <div className="glass-card p-5 interactive-item border-l-4 border-cyan-400">
-  <p className="text-slate-500 text-sm font-medium uppercase tracking-wider">Daily Streak</p>
-  <p className="text-4xl font-bold text-cyan-600 dark:text-cyan-300">
-    {(stats.dailyStreak || 0)} {" "}
-    <span className="text-lg font-normal text-slate-400">
-      {(stats.dailyStreak || 0) === 1 ? 'day' : 'days'}
-    </span>
-  </p>
-</div>
+        <p className="text-slate-500 text-sm font-medium uppercase tracking-wider">Daily Streak</p>
+        <p className="text-4xl font-bold text-cyan-600 dark:text-cyan-300 flex items-center gap-3">
+          <span>
+            {(stats.dailyStreak || 0)}
+          </span>
+          {stats.dailyStreak > 0 && (
+            <span className="text-2xl animate-pulse" role="img" aria-label="fire">🔥</span>
+          )}
+          <span className="text-lg font-normal text-slate-400">
+            {(stats.dailyStreak || 0) === 1 ? 'day' : 'days'}
+          </span>
+        </p>
+      </div>
         
         <div className="glass-card p-5 interactive-item border-l-4 border-amber-400">
           <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Quiz Score</p>
