@@ -1,4 +1,78 @@
-# Smart Placement Preparation Portal
+# Student Partner - AI-Powered Career Prep Platform
+
+A MERN stack application designed to help students master DSA and Aptitude with a focus on consistency and real-time progress tracking.
+
+## Key Technical Features
+- Dynamic Question Bank: 100+ randomized aptitude and quiz questions using MongoDB's `$sample` aggregation to deliver fresh, randomized sets.
+- Midnight-Normalized Streak System: Robust daily streak logic that normalizes by day boundaries to ensure accurate progress tracking across time zones and variances in user activity time-of-day.
+- Company-Specific DSA: Problems categorized by top recruiters (TCS, Wipro, Infosys) with targeted practice flows.
+- AI Integration: Prompt-engineered explanations and AI-powered resume/feedback features for personalized, actionable guidance.
+- Interactive Dashboard: Real-time stats visualization with randomized motivational triggers and progress summaries.
+
+## Tech Stack
+- Frontend: React, Vite, Tailwind CSS, Axios
+- Backend: Node.js, Express.js
+- Database: MongoDB Atlas
+
+## Installation & Setup
+1. Clone the repository:
+
+   git clone <repo-url>
+   cd Student Partner
+
+2. Install dependencies for both client and server:
+
+   npm run install-all
+
+3. Environment variables
+- Frontend (client/.env):
+  - `VITE_API_URL` — Example: `http://localhost:5000/api` (used by the client to target the API)
+- Backend (server/.env):
+  - `MONGODB_URI` — Your MongoDB Atlas connection string (used in `server/src/config/db.js`)
+  - `JWT_SECRET` — Secret used to sign JWTs (used in `server/src/utils/generateToken.js`)
+  - Optional / helpful envs:
+    - `PORT` — Server port (defaults to `5000`)
+    - `CLIENT_URL` — Comma-separated allowed origins for CORS (e.g., `https://your-app.vercel.app`)
+    - `EMAIL_USER`, `EMAIL_PASS`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_FROM` — For SMTP email features
+
+4. Run locally
+- Start server (development):
+
+   npm run server
+
+- Start client (development):
+
+   npm run client
+
+- Build client for production:
+
+   npm run build
+
+- Start server for production (from root):
+
+   npm start
+
+## Deployment Notes
+- Frontend:
+  - Set `VITE_API_URL` at build time to point to your deployed API (e.g., `https://api.myapp.com/api`).
+  - Vite will embed `VITE_*` env values at build time.
+- Backend:
+  - Ensure `MONGODB_URI` and `JWT_SECRET` are set in your hosting provider's environment (Render, Heroku, Vercel serverless functions, etc.).
+  - The server uses `process.env.PORT || 5000` so your host can assign the port.
+  - Set `CLIENT_URL` to your frontend origin (or comma-separated origins) so CORS accepts requests from your hosted frontend.
+
+## Security & Best Practices
+- Never commit `.env` files. This repo's `.gitignore` already excludes `.env`.
+- Use a `server/.env.example` or secrets manager in production instead of committing credentials.
+
+## Where to look in the code
+- API client base: `client/src/api.js` — uses `import.meta.env.VITE_API_URL || "http://localhost:5000/api"`
+- Server entry: `server/src/server.js` — CORS and `process.env.PORT` handling
+- DB connection: `server/src/config/db.js` — reads `MONGODB_URI`
+- Token generation: `server/src/utils/generateToken.js` — reads `JWT_SECRET`
+
+## License
+- This project is provided as-is. Add your preferred license if you intend to publish.# Smart Placement Preparation Portal
 
 A full-stack MERN web application for placement preparation with authentication, aptitude quizzes, coding practice tracking, leaderboard ranking, and a smart study plan generator.
 
