@@ -1,29 +1,30 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Always load the server-level .env explicitly from src/config/
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+// Load environment variables from a .env file if it exists (for local dev)
+// On Render, this will safely do nothing and use the dashboard variables instead
+dotenv.config();
 
 export const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI;
+    // We check for both common names just to be extra safe
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
-    if (!mongoUri || !mongoUri.includes(".mongodb.net")) {
+    // Check if the URI exists and looks like a valid MongoDB Atlas string
+    if (!mongoUri || !mongoUri.includes("mongodb")) {
       throw new Error(
-        "Invalid MONGODB_URI. Set your real MongoDB Atlas URI in server/.env."
+        "Invalid or missing MONGODB_URI. Please check your Render Environment settings."
       );
     }
 
+    // Connect to the database
     const conn = await mongoose.connect(mongoUri);
-    console.log(`MongoDB connected: ${conn.connection.host}`);
+    
+    console.log(`✅ MongoDB connected: ${conn.connection.host}`);
     return conn;
   } catch (error) {
-    console.error(`Error connecting to MongoDB: ${error.message}`);
+    console.error(`❌ Error connecting to MongoDB: ${error.message}`);
+    // We exit the process because the app cannot function without a database
     process.exit(1);
   }
 };
